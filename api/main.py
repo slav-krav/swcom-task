@@ -2,14 +2,19 @@ from __future__ import annotations
 
 from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
+from starlette.requests import Request
+from starlette.responses import JSONResponse
 
 import crud
 import models
 from database import SessionLocal, create_tables, get_or_create
+from opa_middleware import opa_access_check
 from schemas import User, UserWithToken
 
 app = FastAPI()
 API_ENDPOINT = '/api/users'
+
+app.middleware('http')(opa_access_check)
 
 
 def get_db():
