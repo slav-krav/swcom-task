@@ -5,6 +5,10 @@ import future.keywords.if
 default allow := false
 
 allow if {
+    input.path == "/"
+}
+
+allow if {
 	input.method == "POST"
 	is_users_endpoint
 	is_admin
@@ -34,15 +38,6 @@ token := payload if {
 	# an environment variable. Environment variables can be accessed using
 	# the `opa.runtime()` built-in function.
 	io.jwt.verify_hs256(bearer_token, "SECRET")
-
-	# This statement invokes the built-in function `io.jwt.decode` passing the
-	# parsed bearer_token as a parameter. The `io.jwt.decode` function returns an
-	# array:
-	#
-	#	[header, payload, signature]
-	#
-	# In Rego, you can pattern match values using the `=` and `:=` operators. This
-	# example pattern matches on the result to obtain the JWT payload.
 	[_, payload, _] := io.jwt.decode(bearer_token)
 }
 
