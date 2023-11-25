@@ -25,6 +25,6 @@ async def _check_permission(method, path, auth_header) -> bool:
 async def opa_access_check(request: Request, call_next):
     if not await _check_permission(request.method,
                                    request.url.path,
-                                   request.headers.get('Authorisation')):
+                                   request.headers.get('Authorization')):
         return JSONResponse({"Error": "403, Policy violation"}, status_code=403)
     return await call_next(request)
