@@ -33,10 +33,7 @@ is_admin if {
 }
 
 token := payload if {
-	# Verify the signature on the Bearer token. In this example the secret is
-	# hardcoded into the policy however it could also be loaded via data or
-	# an environment variable. Environment variables can be accessed using
-	# the `opa.runtime()` built-in function.
+	# Verify the signature on the Bearer token.
 	io.jwt.verify_hs256(bearer_token, "SECRET")
 	[_, payload, _] := io.jwt.decode(bearer_token)
 }
