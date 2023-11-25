@@ -4,8 +4,26 @@ import future.keywords.if
 
 default allow := false
 
+is_post if {
+    input.method == "POST"
+}
+
+is_users_endpoint if {
+    input.path == "/api/users"
+}
+
+is_admin if {
+    token.role.type == "admin"
+}
+
+is_api_call if {
+    startswith(input.path, "/api/")
+}
+
+# allow rules
 allow if {
-    input.path == "/"
+    input.method == "GET"
+    not is_api_call
 }
 
 allow if {
@@ -19,18 +37,8 @@ allow if {
 	token
     input.method == "GET"
 }
+# end allow rules
 
-is_post if {
-    input.method == "POST"
-}
-
-is_users_endpoint if {
-    input.path == "/api/users"
-}
-
-is_admin if {
-    token.role.type == "admin"
-}
 
 token := payload if {
 	# Verify the signature on the Bearer token.
