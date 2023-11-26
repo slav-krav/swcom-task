@@ -29,4 +29,6 @@ async def opa_access_check(request: Request, call_next):
             return JSONResponse({"Error": "403, Policy violation"}, status_code=403)
     except aiohttp.ClientConnectorError:
         return JSONResponse({"Error": "503, OPA service unreachable"}, status_code=503)
+    except KeyError:
+        return JSONResponse({"Error": "500, OPA service misconfigured. Check policies."}, status_code=500)
     return await call_next(request)
