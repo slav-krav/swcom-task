@@ -1,0 +1,18 @@
+apiVersion: v1
+data:
+  policy.rego: "package policy\n\nimport future.keywords.if\n\ndefault allow := false\n\nis_post
+    if {\n    input.method == \"POST\"\n}\n\nis_users_endpoint if {\n    input.path
+    == \"/api/users\"\n}\n\nis_admin if {\n    token.role.type == \"admin\"\n}\n\nis_api_call
+    if {\n    startswith(input.path, \"/api/\")\n}\n\n# allow rules\nallow if {\n
+    \   input.method == \"GET\"\n    not is_api_call\n}\n\nallow if {\n\tinput.method
+    == \"POST\"\n\tis_users_endpoint\n\tis_admin\n}\n\nallow if {\n\tis_users_endpoint\n\ttoken\n
+    \   input.method == \"GET\"\n}\n# end allow rules\n\n\ntoken := payload if {\n\t#
+    Verify the signature on the Bearer token.\n\tio.jwt.verify_hs256(bearer_token,
+    \"SECRET\")\n\t[_, payload, _] := io.jwt.decode(bearer_token)\n}\n\nbearer_token
+    := t if {\n\t# Bearer tokens are contained inside of the HTTP Authorization header.
+    This rule\n\t# parses the header and extracts the Bearer token value. If no Bearer
+    token is\n\t# provided, the `bearer_token` value is undefined.\n\tv := input.authorization\n\tstartswith(v,
+    \"Bearer \")\n\tt := substring(v, count(\"Bearer \"), -1)\n}\n"
+kind: ConfigMap
+metadata:
+  name: opa-bundle
