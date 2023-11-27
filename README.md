@@ -1,7 +1,7 @@
 # k8s launch
 1. Build an image from app's root folder.
 ```shell
-docker build --tag=userapp .
+docker build --tag=usersapp .
 ```
 2. Run local k8s cluster with minikube and upload just built image there.
 ```shell
@@ -22,18 +22,19 @@ minikube image ls --format table
 ```
 4. Apply k8s manifests to your minikube cluster with
 ```shell
-kubectl apply -f "path_to_repo/deploy"
+kubectl apply -f "./deploy"
 ```
 5. Expose your service with minikube tool
 ```shell
 minikube service users-app-service --url
 ```
 Get printed IP address, copy it and paste to your browser
-6. ..
 
 # Known issues
-Due to time my personal limits and task description I had to omit usage of some best practises. 
-Thus, some unfortunate flaws present, here are some of them: 
+Due to my personal time limits I had to omit usage of some best practises. 
+Thus, some unfortunate flaws present. I assumed that acknowledgment of the issues would be OK for a test task, and
+they could be actually used to fuel further discussions. 
+Here are some of them: 
 1. Py app far from ideal app: 
    - No tests 
    - Service is stateful (sqllite data is in container with the py service). 
@@ -43,6 +44,7 @@ which violates DB constraint, you will get `Internal server error` instead of us
 2. No real authentication. Only authorisation. JWT token will be generated at the moment of user creation.
 3. JWT salt is hardcoded to `SECRET` value.
 4. Usage of `latest` docker tag
+5. Decision are not totally secure and contain JWT token. 
 
 
 
