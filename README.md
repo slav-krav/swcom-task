@@ -11,7 +11,9 @@ minikube image load usersapp:latest
 3. Confirm that image is uploaded
 ```shell
 minikube image ls --format table
-
+```
+There should be `usersapp:latest` in the output
+```
 |-----------------------------------------|---------|---------------|--------|
 |                  Image                  |   Tag   |   Image ID    |  Size  |
 |-----------------------------------------|---------|---------------|--------|
@@ -30,21 +32,26 @@ minikube service users-app-service --url
 ```
 Get printed IP address, copy it and paste to your browser
 
+6. Verify that decision logs are printed to a stdout of an OPA sidecar container
+```shell
+kubectl logs $(kubectl get pods -l app=users-app -o name) opa --follow
+```
+
 # Known issues
 Due to my personal time limits I had to omit usage of some best practises. 
 Thus, some unfortunate flaws present. I assumed that acknowledgment of the issues would be OK for a test task, and
 they could be actually used to fuel further discussions. 
 Here are some of them: 
-1. Py app far from ideal app: 
+1. Py app is far from perfection: 
    - No tests 
    - Service is stateful (sqllite data is in container with the py service). 
    - Py app is not fully user-friendly. For example, if you will try to create two users with same email,
 which violates DB constraint, you will get `Internal server error` instead of user-friendly error
    
-2. No real authentication. Only authorisation. JWT token will be generated at the moment of user creation.
+2. No real authentication. Only authorisation. Ever-lasted JWT token will be generated at the moment of user creation.
 3. JWT salt is hardcoded to `SECRET` value.
 4. Usage of `latest` docker tag
-5. Decision are not totally secure and contain JWT token. 
+5. Decision logs are not totally secure and contain JWT token. And they located in a container's stdout. 
 
 
 
