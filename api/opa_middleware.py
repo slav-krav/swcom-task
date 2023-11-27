@@ -15,7 +15,6 @@ async def _check_permission(method, path, auth_header) -> bool:
              'authorization': auth_header}
     }
     headers = {'Content-Type': 'application/json'}
-
     async with aiohttp.ClientSession() as session:
         async with session.post(f'{OPA_URL}/v1/data/policy', json=payload, headers=headers) as response:
             decision = await response.json()
@@ -23,8 +22,13 @@ async def _check_permission(method, path, auth_header) -> bool:
 
 
 async def opa_access_check(request: Request, call_next):
-    if not await _check_permission(request.method,
-                                   request.url.path,
-                                   request.headers.get('Authorization')):
-        return JSONResponse({"Error": "403, Policy violation"}, status_code=403)
+    try:
+        if not await _check_permission(request.method,
+                                       request.url.path,
+                                       request.headers.get('Authorization')):
+            return JSONResponse({"Error": "403, Policy violation"}, status_code=403)
+    except aiohttp.ClientConnectorError:
+        return JSONResponse({"Error": "503, OPA service unreachable"}, status_code=503)
+    except KeyError:
+        return JSONResponse({"Error": "500, OPA service misconfigured. Check policies."}, status_code=500)
     return await call_next(request)

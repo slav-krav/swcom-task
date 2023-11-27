@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: users-app-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: users-app
+  template:
+    metadata:
+      labels:
+        app: users-app
+    spec:
+      containers:
+        - name: users-app
+          image: usersapp:latest
+          ports:
+            - containerPort: 80
+          imagePullPolicy: Never  # to use pre uploaded image
+
+        - name: opa
+          image: openpolicyagent/opa:edge-static
+          ports:
+            - containerPort: 8181
+          args:
+            - "run"
+            - "-b"
+            - "/bundle"
+            - "--watch"
+            - "--server"
+            - "--addr"
+            - "0.0.0.0:8181"
+            - "--log-level"
+            - "info"
+            - "--set=decision_logs.console=true"
+          volumeMounts:
+            - name: opa-bundle
+              mountPath: /bundle
+
+      volumes:
+        - name: opa-bundle
+          configMap:
+            name: opa-bundle
