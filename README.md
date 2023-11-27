@@ -1,3 +1,13 @@
+# Users app description
+I decided to proceed with a small FastAPI service that will have every call to `/api` covered by an OPA service.  
+There are a few more "helper" endpoints exposed like `/`, `/init`, `/docs` that are always allowed by policies.  
+
+OPA is deployed as a sidecar container. Policies are delivered as a configmap mounted as volume.  
+FastAPI service uses middleware to validate every request against policies. Authorization is based on JWT tokens.  
+
+Everything you need to deploy the app is in this repo. As well as an instruction how to deploy to a minikube cluster. 
+
+
 # k8s launch
 1. Build an image from app's root folder.
 ```shell
