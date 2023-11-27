@@ -34,11 +34,16 @@ Get printed IP address, copy it and paste to your browser
 # Known issues
 Due to time my personal limits and task description I had to omit usage of some best practises. 
 Thus, some unfortunate flaws present, here are some of them: 
-1. No tests in py service
-2. Service is stateful (sqllite data is in container with the py service). 
-3. No real authentication. Only authorisation. JWT token will be generated at the moment of user creation.
-4. JWT salt is hardcoded to `SECRET` value.
-5. Usage of `latest` docker tag
+1. Py app far from ideal app: 
+   - No tests 
+   - Service is stateful (sqllite data is in container with the py service). 
+   - Py app is not fully user-friendly. For example, if you will try to create two users with same email,
+which violates DB constraint, you will get `Internal server error` instead of user-friendly error
+   
+2. No real authentication. Only authorisation. JWT token will be generated at the moment of user creation.
+3. JWT salt is hardcoded to `SECRET` value.
+4. Usage of `latest` docker tag
+
 
 
 # Local non-containerized launch reminders
