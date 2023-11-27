@@ -1,16 +1,3 @@
-# local launch reminders
-1. Run fast api server
-```shell
-cd api
-uvicorn main:app --reload
-```
-2. Run opa server locally: 
-```shell
-cd opa
-opa run -s --addr localhost:8181 -b .
-```
-
-
 # k8s launch
 1. Build an image from app's root folder.
 ```shell
@@ -43,5 +30,27 @@ minikube service users-app-service --url
 ```
 Get printed IP address, copy it and paste to your browser
 6. ..
+
+# Known issues
+Due to time my personal limits and task description I had to omit usage of some best practises. 
+Thus, some unfortunate flaws present, here are some of them: 
+1. No tests in py service
+2. Service is stateful (sqllite data is in container with the py service). 
+3. No real authentication. Only authorisation. JWT token will be generated at the moment of user creation.
+4. JWT salt is hardcoded to `SECRET` value.
+5. Usage of `latest` docker tag
+
+
+# Local non-containerized launch reminders
+1. Run fast api server
+```shell
+cd api
+uvicorn main:app --reload
+```
+2. Run opa server locally: 
+```shell
+cd opa
+opa run -s --addr localhost:8181 -b .
+```
 
 
